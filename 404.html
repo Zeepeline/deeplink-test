@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Redirecting…</title>
+
+  <!-- iOS smart banner (optional) -->
+  <meta name="apple-itunes-app" content="app-id=YOUR_IOS_APP_ID">
+
+  <script>
+    (function () {
+      // ===== CONFIG =====
+      const REPO_NAME = "deeplink-test"; // repo github kamu
+      const SCHEME = "labara://";
+
+      const ANDROID_STORE =
+        "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME";
+      const IOS_STORE =
+        "https://apps.apple.com/app/idYOUR_IOS_APP_ID";
+
+      // ===== GET PATH =====
+      // /deeplink-test/paket/12  ->  paket/12
+      const path = location.pathname
+        .replace(`/${REPO_NAME}`, "")
+        .replace(/^\/+/, "");
+
+      const deepLink = SCHEME + path;
+
+      // ===== TRY OPEN APP =====
+      const start = Date.now();
+      location.href = deepLink;
+
+      // ===== FALLBACK =====
+      setTimeout(() => {
+        if (Date.now() - start < 1700) {
+          const ua = navigator.userAgent || "";
+          if (/Android/i.test(ua)) location.href = ANDROID_STORE;
+          else if (/iPhone|iPad|iPod/i.test(ua)) location.href = IOS_STORE;
+        }
+      }, 1200);
+    })();
+  </script>
+</head>
+<body></body>
+</html>
