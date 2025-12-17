@@ -5,40 +5,45 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Redirecting…</title>
 
-  <!-- iOS smart banner (optional) -->
-  <meta name="apple-itunes-app" content="app-id=YOUR_IOS_APP_ID">
-
   <script>
     (function () {
       // ===== CONFIG =====
-      const REPO_NAME = "deeplink-test"; // repo github kamu
+      const REPO_NAME = "deeplink-test";
       const SCHEME = "labara://";
+      const ANDROID_STORE = "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME";
+      const IOS_STORE = "https://apps.apple.com/app/idYOUR_IOS_APP_ID";
 
-      const ANDROID_STORE =
-        "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME";
-      const IOS_STORE =
-        "https://apps.apple.com/app/idYOUR_IOS_APP_ID";
-
-      // ===== GET PATH =====
-      // /deeplink-test/paket/12  ->  paket/12
+      // ===== BUILD DEEPLINK FROM PATH =====
       const path = location.pathname
         .replace(`/${REPO_NAME}`, "")
         .replace(/^\/+/, "");
-
       const deepLink = SCHEME + path;
 
+      // ===== DETECT IF APP OPENED (cancel fallback) =====
+      let appOpened = false;
+
+      function markOpened() { appOpened = true; }
+
+      // When app opens / prompt shown, browser often hides page
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) markOpened();
+      });
+
+      // Some browsers fire these when leaving the page
+      window.addEventListener("pagehide", markOpened);
+      window.addEventListener("blur", markOpened);
+
       // ===== TRY OPEN APP =====
-      const start = Date.now();
       location.href = deepLink;
 
-      // ===== FALLBACK =====
+      // ===== FALLBACK (ONLY IF NOT OPENED) =====
       setTimeout(() => {
-        if (Date.now() - start < 1700) {
-          const ua = navigator.userAgent || "";
-          if (/Android/i.test(ua)) location.href = ANDROID_STORE;
-          else if (/iPhone|iPad|iPod/i.test(ua)) location.href = IOS_STORE;
-        }
-      }, 1200);
+        if (appOpened) return;
+
+        const ua = navigator.userAgent || "";
+        if (/Android/i.test(ua)) location.href = ANDROID_STORE;
+        else if (/iPhone|iPad|iPod/i.test(ua)) location.href = IOS_STORE;
+      }, 1500);
     })();
   </script>
 </head>
