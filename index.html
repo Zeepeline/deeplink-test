@@ -45,20 +45,20 @@
       const start = Date.now();
       window.location.href = '/home';
 
-      setTimeout(() => {
-        const elapsed = Date.now() - start;
+      // setTimeout(() => {
+      //   const elapsed = Date.now() - start;
 
-        // Jika masih di halaman ini, fallback.
-        // (Heuristik sederhana untuk demo)
-        if (elapsed < 1700) {
-          document.getElementById("status").textContent =
-            "App tidak terbuka. Mengarahkan ke fallback…";
+      //   // Jika masih di halaman ini, fallback.
+      //   // (Heuristik sederhana untuk demo)
+      //   if (elapsed < 1700) {
+      //     document.getElementById("status").textContent =
+      //       "App tidak terbuka. Mengarahkan ke fallback…";
 
-          if (isAndroid) window.location.href = androidStore;
-          else if (isiOS) window.location.href = iosStore;
-          else window.location.href = fallbackWeb;
-        }
-      }, 1200);
+      //     if (isAndroid) window.location.href = androidStore;
+      //     else if (isiOS) window.location.href = iosStore;
+      //     else window.location.href = fallbackWeb;
+      //   }
+      // }, 1200);
     }
 
     document.getElementById("openBtn").addEventListener("click", openApp);
