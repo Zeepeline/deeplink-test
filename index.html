@@ -26,42 +26,41 @@
   </div>
 
   <script>
-    // ====== KONFIG ======
-    const schemeBase = "labara://"; // contoh: labara://paket/12
-    const androidStore = "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME";
-    const iosStore = "https://apps.apple.com/app/idYOUR_IOS_APP_ID";
-    const fallbackWeb = "https://example.com"; // optional
+  // ====== KONFIG ======
+  const schemeBase = "labara://"; // custom scheme app
+  const androidStore = "https://play.google.com/store/apps/details?id=YOUR_PACKAGE_NAME";
+  const iosStore = "https://apps.apple.com/app/idYOUR_IOS_APP_ID";
+  const fallbackWeb = "https://example.com"; // optional
 
-    const ua = navigator.userAgent || "";
-    const isAndroid = /Android/i.test(ua);
-    const isiOS = /iPhone|iPad|iPod/i.test(ua);
+  const ua = navigator.userAgent || "";
+  const isAndroid = /Android/i.test(ua);
+  const isiOS = /iPhone|iPad|iPod/i.test(ua);
 
-    function openApp() {
-      const path = (document.getElementById("path").value || "").replace(/^\/+/, "");
-      const deepLink = '/home';
+  function openApp() {
+    // input tetap dibiarkan ada, tapi kita abaikan sesuai request kamu
+    const deepLink = schemeBase + "home"; // ✅ selalu HOME
 
-      document.getElementById("status").textContent = "Mencoba membuka: " + deepLink;
+    document.getElementById("status").textContent = "Mencoba membuka: " + deepLink;
 
-      const start = Date.now();
-      window.location.href = deepLink;
+    const start = Date.now();
+    window.location.href = deepLink;
 
-      setTimeout(() => {
-        const elapsed = Date.now() - start;
+    setTimeout(() => {
+      const elapsed = Date.now() - start;
 
-        // Jika masih di halaman ini, fallback.
-        // (Heuristik sederhana untuk demo)
-        if (elapsed < 1700) {
-          document.getElementById("status").textContent =
-            "App tidak terbuka. Mengarahkan ke fallback…";
+      // heuristik fallback: kalau app gak kebuka, arahkan ke store/web
+      if (elapsed < 1700) {
+        document.getElementById("status").textContent =
+          "App tidak terbuka. Mengarahkan ke fallback…";
 
-          if (isAndroid) window.location.href = androidStore;
-          else if (isiOS) window.location.href = iosStore;
-          else window.location.href = fallbackWeb;
-        }
-      }, 1200);
-    }
+        if (isAndroid) window.location.href = androidStore;
+        else if (isiOS) window.location.href = iosStore;
+        else window.location.href = fallbackWeb;
+      }
+    }, 1200);
+  }
 
-    document.getElementById("openBtn").addEventListener("click", openApp);
-  </script>
+  document.getElementById("openBtn").addEventListener("click", openApp);
+</script>
 </body>
 </html>
